@@ -1,24 +1,26 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import RepositoryList from './Repositories';
+import { useGitHubRepositorySearch } from './Repositories/hooks/useGithubRepository';
 
-function App() {
+const App = () => {
+  const { data, error, loading } = useGitHubRepositorySearch();
+
+  if (error) {
+    return <>There has been an error while retrieving repository information.</>
+  }
+
+  if (loading) {
+    return <>Loading repositories</>
+  }
+
+  if (!data?.items) {
+    return <>There are no items to display</>
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='content-area'>
+      <RepositoryList repositories={data.items} />
     </div>
   );
 }
